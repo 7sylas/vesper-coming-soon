@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vesper — Coming Soon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;background:#080709;color:#e0d8e8;cursor:none;-webkit-font-smoothing:antialiased}
+
+:root{
+  --serif:'Cormorant Garamond',serif;
+  --muted:rgba(224,216,232,.36);
+  --border:rgba(224,216,232,.07);
+  --border-h:rgba(224,216,232,.13);
+  --gold:#c9a96e;
+  --gold2:#e8c98a;
+}
+
+.c-dot{position:fixed;width:6px;height:6px;background:#fff;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:9999;mix-blend-mode:difference;transition:width .15s,height .15s}
+.c-ring{position:fixed;width:30px;height:30px;border:1px solid rgba(201,169,110,.35);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:9998;transition:width .3s cubic-bezier(.16,1,.3,1),height .3s cubic-bezier(.16,1,.3,1),border-color .3s}
+body.hov .c-dot{width:10px;height:10px}
+body.hov .c-ring{width:50px;height:50px;border-color:rgba(201,169,110,.65)}
+
+.pre{position:fixed;inset:0;z-index:2000;background:#080709;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;transition:opacity 1s cubic-bezier(.4,0,.2,1),transform 1s cubic-bezier(.4,0,.2,1)}
+.pre.out{opacity:0;pointer-events:none;transform:scale(1.04)}
+.pre-logo{font-family:var(--serif);font-size:2.2rem;font-weight:300;letter-spacing:.42em;color:#fff;text-transform:uppercase;padding-left:.42em;opacity:0;animation:fu .9s cubic-bezier(.16,1,.3,1) .15s forwards}
+.pre-orn{display:flex;align-items:center;gap:12px;opacity:0;animation:fi .6s ease .55s forwards}
+.pre-orn span{display:block;height:1px;width:38px}
+.pre-orn span:first-child{background:linear-gradient(90deg,transparent,var(--gold))}
+.pre-orn span:last-child{background:linear-gradient(90deg,var(--gold),transparent)}
+.pre-orn i{font-size:7px;color:var(--gold);opacity:.65}
+.pre-track{width:160px;height:1px;background:rgba(255,255,255,.06);overflow:hidden;opacity:0;animation:fi .5s ease .65s forwards}
+.pre-fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));animation:load 1.7s cubic-bezier(.4,0,.2,1) .65s forwards}
+.pre-pct{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);opacity:0;animation:fi .5s ease .65s forwards}
+
+.bg{position:fixed;inset:0;z-index:0;background:#080709;overflow:hidden}
+.orb{position:absolute;border-radius:50%;pointer-events:none}
+.o1{width:950px;height:950px;top:-380px;left:-300px;background:radial-gradient(circle,rgba(138,80,200,.13) 0%,transparent 60%);animation:breathe 14s ease-in-out infinite}
+.o2{width:720px;height:720px;bottom:-280px;right:-200px;background:radial-gradient(circle,rgba(200,80,120,.08) 0%,transparent 60%);animation:breathe 17s ease-in-out infinite reverse 5s}
+.o3{width:480px;height:480px;top:5%;right:5%;background:radial-gradient(circle,rgba(160,40,80,.06) 0%,transparent 65%);animation:breathe 22s ease-in-out infinite 8s}
+.o4{width:380px;height:380px;bottom:10%;left:5%;background:radial-gradient(circle,rgba(220,180,120,.045) 0%,transparent 65%);animation:breathe 18s ease-in-out infinite 2s}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(224,216,232,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(224,216,232,.022) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black 10%,transparent 80%)}
+.vig{position:absolute;inset:0;background:radial-gradient(ellipse 100% 100% at 50% 50%,transparent 35%,rgba(8,7,9,.75) 100%)}
+.stars{position:absolute;inset:0}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d) ease-in-out infinite var(--dl)}
+.noise{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.45;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E")}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;display:flex;align-items:center;justify-content:center;padding:0 44px;opacity:0;transition:opacity .7s ease}
+nav.on{opacity:1}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.lmark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,rgba(201,169,110,.85),rgba(232,201,138,.6));display:flex;align-items:center;justify-content:center;font-size:12px;color:#0d0a10;box-shadow:0 0 28px rgba(201,169,110,.28)}
+.ltext{font-family:var(--serif);font-size:19px;font-weight:400;letter-spacing:.14em;color:#fff;text-transform:lowercase}
+
+.corner{position:fixed;z-index:10;width:18px;height:18px;opacity:0;transition:opacity .9s ease}
+.corner.on{opacity:.22}
+.tl{top:22px;left:22px;border-top:1px solid var(--gold);border-left:1px solid var(--gold)}
+.tr{top:22px;right:22px;border-top:1px solid var(--gold);border-right:1px solid var(--gold)}
+.bl{bottom:22px;left:22px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold)}
+.br{bottom:22px;right:22px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold)}
+
+main{position:relative;z-index:10;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px}
+
+.eyebrow{font-size:10px;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);font-weight:400;margin-bottom:30px;opacity:0;transform:translateY(8px);transition:opacity .7s ease,transform .7s ease}
+.eyebrow.on{opacity:1;transform:translateY(0)}
+
+.t-line{overflow:hidden}
+.t-inner{font-family:var(--serif);display:block;font-weight:300;line-height:1.0;letter-spacing:-.005em;color:#fff;opacity:0;transform:translateY(48px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.t-inner.on{opacity:1;transform:translateY(0)}
+#tl1{font-size:clamp(3.8rem,7vw,6.8rem)}
+#tl2{font-size:clamp(3.8rem,7vw,6.8rem);font-style:italic;color:transparent;background:linear-gradient(110deg,var(--gold) 0%,var(--gold2) 45%,#f2daa8 65%,var(--gold) 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;animation:goldShimmer 5s linear infinite}
+
+.div{display:flex;align-items:center;justify-content:center;gap:14px;margin:26px 0;opacity:0;transition:opacity .8s ease}
+.div.on{opacity:1}
+.dl{height:1px;width:48px}
+.dl:first-child{background:linear-gradient(90deg,transparent,rgba(201,169,110,.4))}
+.dl:last-child{background:linear-gradient(90deg,rgba(201,169,110,.4),transparent)}
+.dd{width:5px;height:5px;background:var(--gold);transform:rotate(45deg);opacity:.55}
+
+.tagline{font-size:13.5px;line-height:1.9;color:var(--muted);max-width:340px;font-weight:300;letter-spacing:.02em;opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease}
+.tagline.on{opacity:1;transform:translateY(0)}
+
+
+.bottom-line{position:fixed;bottom:30px;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:center;gap:20px;opacity:0;transition:opacity .8s ease}
+.bottom-line.on{opacity:1}
+.b-item{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(224,216,232,.22);font-weight:400}
+.b-dot{width:2px;height:2px;border-radius:50%;background:rgba(201,169,110,.3)}
+
+@keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.12)}}
+@keyframes twinkle{0%,100%{opacity:.06}50%{opacity:.5}}
+@keyframes goldShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes load{to{width:100%}}
+</style>
+</head>
+<body>
+
+<div class="c-dot" id="cdot"></div>
+<div class="c-ring" id="cring"></div>
+<div class="noise"></div>
+
+<div class="corner tl" id="ctl"></div>
+<div class="corner tr" id="ctr"></div>
+<div class="corner bl" id="cbl"></div>
+<div class="corner br" id="cbr"></div>
+
+<div class="pre" id="pre">
+  <div class="pre-logo">Vesper</div>
+  <div class="pre-orn"><span></span><i class="fa-solid fa-diamond"></i><span></span></div>
+  <div class="pre-track"><div class="pre-fill"></div></div>
+  <div class="pre-pct"><span id="pct">0</span> %</div>
+</div>
+
+<div class="bg">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+  <div class="orb o4"></div>
+  <div class="grid"></div>
+  <div class="stars" id="stars"></div>
+  <div class="vig"></div>
+</div>
+
+<nav id="nav">
+  <a href="#" class="nav-logo" onclick="return false">
+    <div class="lmark"><i class="fa-solid fa-moon"></i></div>
+    <span class="ltext">vesper</span>
+  </a>
+</nav>
+
+<main>
+  <div class="eyebrow" id="ey">Something exceptional is coming</div>
+
+  <div class="t-line"><span class="t-inner" id="tl1">Coming</span></div>
+  <div class="t-line"><span class="t-inner" id="tl2">Soon.</span></div>
+
+  <div class="div" id="dv">
+    <div class="dl"></div>
+    <div class="dd"></div>
+    <div class="dl"></div>
+  </div>
+
+  <p class="tagline" id="tg">Vesper is being carefully crafted.<br/>Be the first to know when we launch.</p>
+</main>
+
+<div class="bottom-line" id="btm">
+  <span class="b-item">Vesper</span>
+  <div class="b-dot"></div>
+  <span class="b-item">Private Beta</span>
+  <div class="b-dot"></div>
+  <span class="b-item">© 2024</span>
+</div>
+
+<script>
+const cdot=document.getElementById('cdot');
+const cring=document.getElementById('cring');
+let mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cdot.style.left=mx+'px';cdot.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cring.style.left=rx+'px';cring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,input').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+
+const st=document.getElementById('stars');
+for(let i=0;i<120;i++){
+  const s=document.createElement('div');s.className='star';
+  const sz=Math.random()>.9?2.5:Math.random()>.65?1.5:1;
+  s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${4+Math.random()*9}s;--dl:${Math.random()*8}s;opacity:${.08+Math.random()*.38}`;
+  st.appendChild(s);
+}
+
+const pctEl=document.getElementById('pct');
+const pre=document.getElementById('pre');
+let n=0;
+const iv=setInterval(()=>{
+  n+=Math.floor(Math.random()*7)+2;
+  if(n>=100){n=100;clearInterval(iv)}
+  pctEl.textContent=n;
+  if(n>=100) setTimeout(launch,300);
+},55);
+
+function on(id,delay){setTimeout(()=>document.getElementById(id).classList.add('on'),delay)}
+
+function launch(){
+  pre.classList.add('out');
+  setTimeout(()=>{
+    document.getElementById('nav').classList.add('on');
+    ['ctl','ctr','cbl','cbr'].forEach((id,i)=>setTimeout(()=>document.getElementById(id).classList.add('on'),i*80));
+    on('ey',200);
+    setTimeout(()=>document.getElementById('tl1').classList.add('on'),360);
+    setTimeout(()=>document.getElementById('tl2').classList.add('on'),510);
+    on('dv',700);
+    on('tg',800);
+    on('nw',950);
+    on('btm',1100);
+  },600);
+}
+
+function handleNotify(){
+  const val=document.getElementById('nemail').value.trim();
+  if(!val||!val.includes('@')) return;
+  document.getElementById('nrow').style.display='none';
+  const s=document.getElementById('nsuccess');
+  s.style.display='flex';
+  s.style.animation='fi .5s ease forwards';
+}
+
+document.getElementById('nemail').addEventListener('keydown',e=>{if(e.key==='Enter') handleNotify()});
+</script>
+</body>
+</html>
